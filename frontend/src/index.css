@@ -1,0 +1,573 @@
+:root {
+  /* requested 6-color palette: a warm neutral tan scale anchored by one deep navy */
+  --bg: #071a35; /* deep navy — sidebar / structural dark / ink / second accent */
+  --surface: #e3ded5; /* main panel */
+  --surface-raised: #f6f5f2; /* lightest tone, for cards atop the panel */
+  --text: color-mix(in srgb, var(--bg) 50%, #1f1d08 50%); /* navy blended with a dark olive ink */
+  --text-muted: #a99a7c; /* darkest tan — muted secondary text */
+  --text-on-bg: #f6f5f2; /* lightest tan, for text on the navy sidebar */
+  --brass: #d0c7b7; /* mid-light tan — borders, structural accents */
+  --brass-strong: #bcb099; /* deeper tan — brighter point accent */
+  --border: color-mix(in srgb, var(--brass-strong) 20%, transparent);
+  /* no red in this palette; reusing --bg here would vanish against the navy
+     sidebar, so the second accent borrows the darkest tan instead */
+  --burgundy: #a99a7c;
+  /* error text sits on the light tan surface, where the tan accent above
+     would be too low-contrast — the navy reads clearly there instead */
+  --danger: var(--bg);
+
+  --font-display: "KoPub Dotum", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  --font-body: "KoPub Dotum", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  --font-utility: "KoPub Dotum", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+
+  color-scheme: light;
+  color: var(--text);
+  background: var(--bg);
+  font: 15px/1.65 var(--font-body);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  /* the sidebar paints its own navy background explicitly; the page canvas
+     itself should read as ivory so any layout gap never shows navy behind content */
+  background: var(--surface);
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  line-height: 1.3;
+}
+
+a {
+  color: var(--bg);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* faint paper grain — pure CSS, no image asset */
+.grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
+}
+
+/* ---------- app shell: sidebar (spines) + ivory main panel ---------- */
+
+.app-shell {
+  display: flex;
+  align-items: flex-start;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  background: var(--bg);
+}
+
+.sidebar {
+  width: 210px;
+  flex-shrink: 0;
+  min-height: 100vh;
+  padding: 18px 0;
+  background: var(--bg);
+  border-right: 1px solid color-mix(in srgb, var(--text-on-bg) 8%, transparent);
+}
+
+.sidebar-brand {
+  display: block;
+  padding: 0 18px 18px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 26px;
+  color: var(--text-on-bg);
+}
+
+.sidebar-brand:hover {
+  text-decoration: none;
+}
+
+.spines {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.spine {
+  display: block;
+  padding: 12px 18px;
+  color: var(--text-on-bg);
+  font-family: var(--font-utility);
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  border-left: 6px solid var(--brass);
+  background: color-mix(in srgb, var(--brass) 14%, transparent);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.spine:hover,
+.spine:focus-visible {
+  text-decoration: none;
+  background: color-mix(in srgb, var(--brass) 24%, transparent);
+  transform: translateX(4px);
+}
+
+/* the generic focus ring is navy, which vanishes on the navy sidebar itself */
+.spine:focus-visible {
+  outline-color: var(--text-on-bg);
+}
+
+.spine.spine-burgundy {
+  border-left-color: var(--burgundy);
+  background: color-mix(in srgb, var(--burgundy) 22%, transparent);
+}
+
+.spine.spine-burgundy:hover,
+.spine.spine-burgundy:focus-visible {
+  background: color-mix(in srgb, var(--burgundy) 34%, transparent);
+}
+
+
+.sidebar-foot {
+  margin-top: 16px;
+  padding: 12px 18px 0;
+  border-top: 1px solid color-mix(in srgb, var(--text-on-bg) 12%, transparent);
+}
+
+.sidebar-foot .muted {
+  color: var(--text-on-bg);
+  opacity: 0.65;
+  font-size: 13px;
+}
+
+.app-main {
+  flex: 1;
+  min-width: 0;
+  min-height: 100vh;
+  background: var(--surface);
+  position: relative;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+}
+
+/* dashboard-style pages (search, book registration, stats) benefit from the
+   full panel width rather than the narrow reading column */
+.container-wide {
+  max-width: 100%;
+}
+
+/* ---------- buttons & forms ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  color: var(--text);
+  border-radius: 3px;
+  padding: 8px 14px;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  border-color: var(--brass-strong);
+}
+
+.btn-primary {
+  background: var(--brass);
+  border-color: var(--brass);
+  color: var(--text);
+  font-weight: 700;
+}
+
+.btn-primary:hover {
+  background: color-mix(in srgb, var(--brass) 82%, black);
+  border-color: color-mix(in srgb, var(--brass) 82%, black);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 360px;
+}
+
+.form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: var(--font-utility);
+  font-size: 13px;
+  letter-spacing: 0.4px;
+  color: var(--text-muted);
+}
+
+.form input,
+.form textarea,
+.form select {
+  font: inherit;
+  padding: 8px 10px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  background: #f9f8f7;
+  color: var(--text);
+}
+
+/* ---------- cards ---------- */
+
+.card {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background-color: #f9f8f7;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+  padding: 16px;
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--text) 6%, transparent);
+}
+
+.error-text {
+  color: var(--danger);
+  font-size: 14px;
+}
+
+.page-status {
+  color: var(--text-muted);
+  padding: 32px 0;
+  text-align: center;
+}
+
+.muted {
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.markdown-body {
+  font-family: var(--font-body);
+}
+
+.markdown-body :first-child {
+  margin-top: 0;
+}
+
+.markdown-body :last-child {
+  margin-bottom: 0;
+}
+
+.markdown-body code {
+  background: color-mix(in srgb, var(--brass-strong) 15%, transparent);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-size: 0.9em;
+  font-family: ui-monospace, Consolas, monospace;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+
+.tabs button {
+  background: none;
+  border: none;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-family: var(--font-utility);
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+  font-size: 14px;
+}
+
+.tabs button.active {
+  color: var(--text);
+  border-bottom-color: var(--burgundy);
+}
+
+.tag {
+  display: inline-block;
+  background: var(--brass);
+  color: var(--text);
+  border-radius: 2px;
+  padding: 2px 9px;
+  font-family: var(--font-utility);
+  font-size: 12px;
+  margin-right: 4px;
+  letter-spacing: 0.4px;
+}
+
+/* ---------- index-card: search / filter chrome, library loan-card motif ---------- */
+
+.index-card {
+  position: relative;
+  background-color: var(--surface-raised);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+  border: 1px solid var(--border);
+  border-radius: 10px 10px 3px 3px;
+  padding: 18px 16px 14px;
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--text) 6%, transparent);
+}
+
+.index-card::before {
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  top: 9px;
+  border-top: 1px dashed var(--brass-strong);
+  opacity: 0.45;
+}
+
+.index-card-meta {
+  font-family: var(--font-utility);
+  font-size: 12px;
+  letter-spacing: 0.6px;
+  color: var(--text-muted);
+  margin: 0 0 10px;
+}
+
+/* ---------- shelf: horizontal-scrolling library shelf of book covers ---------- */
+
+.shelf {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  /* generous buffer on every side so the hover tilt (rotate + translateY)
+     never pushes the scrollable content area and pops a scrollbar into view */
+  padding: 20px 24px 24px;
+  scroll-snap-type: x proximity;
+}
+
+.shelf-book {
+  flex: 0 0 auto;
+  width: 120px;
+  scroll-snap-align: start;
+  text-align: center;
+}
+
+.shelf-book-cover {
+  width: 120px;
+  height: 170px;
+  object-fit: cover;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  box-shadow: 2px 3px 6px color-mix(in srgb, var(--text) 18%, transparent);
+  transition: transform 0.2s ease;
+}
+
+.shelf-book-cover.no-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f9f8f7;
+  color: var(--text-muted);
+  font-family: var(--font-utility);
+  font-size: 12px;
+  padding: 8px;
+}
+
+.shelf-book:hover .shelf-book-cover,
+.shelf-book:focus-within .shelf-book-cover {
+  transform: rotate(-4deg) translateY(-4px);
+}
+
+.shelf-book-title {
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.3;
+  /* fixed height (not just line-clamp) so every title block is exactly the
+     same size and everything below it (date, remove button) lines up,
+     whether the title takes 1 line or 2 */
+  height: 34px;
+  min-height: 34px;
+  max-height: 34px;
+  color: var(--text);
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.shelf-book-title a {
+  color: var(--text);
+}
+
+/* ---------- stamp: one-shot save micro-interaction ---------- */
+
+.stamp {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  z-index: 50;
+  pointer-events: none;
+  border: 3px solid var(--bg);
+  color: var(--bg);
+  font-family: var(--font-utility);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 3px;
+  padding: 10px 22px;
+  border-radius: 4px;
+  white-space: nowrap;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  transform: translate(-50%, -50%) rotate(-8deg) scale(0.6);
+  opacity: 0;
+  animation: stamp-hit 0.9s ease-out forwards;
+}
+
+@keyframes stamp-hit {
+  0% {
+    transform: translate(-50%, -50%) rotate(-8deg) scale(1.6);
+    opacity: 0;
+  }
+  15% {
+    transform: translate(-50%, -50%) rotate(-8deg) scale(0.92);
+    opacity: 1;
+  }
+  25% {
+    transform: translate(-50%, -50%) rotate(-8deg) scale(1);
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(-8deg) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stamp {
+    animation: stamp-fade 0.6s ease-out forwards;
+  }
+  .shelf-book:hover .shelf-book-cover,
+  .shelf-book:focus-within .shelf-book-cover {
+    transform: none;
+  }
+  .spine:hover,
+  .spine:focus-visible {
+    transform: none;
+  }
+}
+
+@keyframes stamp-fade {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(-8deg) scale(1);
+  }
+  20%,
+  70% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(-8deg) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(-8deg) scale(1);
+  }
+}
+
+/* ---------- accessibility: focus rings ---------- */
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+.btn:focus-visible {
+  outline: 2px solid var(--bg);
+  outline-offset: 2px;
+}
+
+.form input:focus-visible,
+.form textarea:focus-visible,
+.form select:focus-visible {
+  outline: 2px solid var(--bg);
+  outline-offset: -1px;
+}
+
+/* ---------- responsive: sidebar becomes a top spine-row on narrow screens ---------- */
+
+@media (max-width: 720px) {
+  .app-shell {
+    flex-direction: column;
+    /* in row layout, flex-start keeps the sidebar from stretching to the
+       (taller) main panel's height; but once we switch to a column layout
+       the cross-axis becomes width, and flex-start would shrink both
+       children to their content width instead of the full viewport width */
+    align-items: stretch;
+  }
+
+  .stamp {
+    font-size: 16px;
+    letter-spacing: 2px;
+    padding: 8px 16px;
+  }
+
+  .sidebar {
+    width: 100%;
+    min-height: auto;
+    padding: 10px 0 1px;
+  }
+
+  .sidebar-brand {
+    padding: 0 14px 6px;
+    font-size: 24px;
+  }
+
+  .spines {
+    flex-direction: row;
+    gap: 3px;
+    padding: 0 6px;
+  }
+
+  /* every item gets an identical box on the mobile tab-bar */
+  .spine {
+    flex: 1 1 0;
+    min-width: 0;
+    border-left: none;
+    border-bottom: 4px solid var(--brass);
+    padding: 10px 4px;
+    font-size: 13px;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .spine.spine-burgundy {
+    border-left: none;
+    border-bottom-color: var(--burgundy);
+  }
+
+  .sidebar-foot {
+    display: none;
+  }
+
+  .container {
+    padding: 20px 16px 56px;
+  }
+}
