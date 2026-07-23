@@ -1,6 +1,7 @@
 # BookLog
 
-AI 기반 독서 기록 플랫폼. React + TypeScript(Vite) 프론트엔드와 Python(FastAPI) + MongoDB(motor) 백엔드로 구성됩니다.
+AI 기반 독서 기록 플랫폼.<br>
+React + TypeScript(Vite) 프론트엔드와 Python(FastAPI) + MongoDB(motor) 백엔드로 구성됩니다.
 
 ## 폴더 구조
 
