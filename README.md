@@ -2,7 +2,8 @@
 
 AI 기반 독서 기록 플랫폼.<br>
 React + TypeScript(Vite) 프론트엔드와 Python(FastAPI) + MongoDB(motor) 백엔드로 구성됩니다.<br>
-회원가입시 JWT토큰, SMTP 이메일 인증 프로토콜 기술이 사용되었습니다.
+회원가입시 JWT토큰, SMTP 이메일 인증 프로토콜 기술이 사용되었습니다.<br>
+https://booklog-theta.vercel.app/ 에서 확인 해 보실 수 있습니다.
 
 ## 폴더 구조
 
