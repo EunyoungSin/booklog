@@ -16,9 +16,11 @@
      would be too low-contrast — the navy reads clearly there instead */
   --danger: var(--bg);
 
-  --font-display: "KoPub Dotum", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
-  --font-body: "KoPub Dotum", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
-  --font-utility: "KoPub Dotum", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  --font-display: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  --font-body: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  --font-utility: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  /* loan-card stamp digits only — the rest of the UI stays on the Korean sans stack */
+  --font-stamp: "IBM Plex Serif", "Spectral", serif;
 
   color-scheme: light;
   color: var(--text);
@@ -135,18 +137,6 @@ a:hover {
 }
 
 
-.sidebar-foot {
-  margin-top: 16px;
-  padding: 12px 18px 0;
-  border-top: 1px solid color-mix(in srgb, var(--text-on-bg) 12%, transparent);
-}
-
-.sidebar-foot .muted {
-  color: var(--text-on-bg);
-  opacity: 0.65;
-  font-size: 13px;
-}
-
 .app-main {
   flex: 1;
   min-width: 0;
@@ -156,16 +146,24 @@ a:hover {
   overflow-x: hidden;
 }
 
-.container {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 32px 24px 80px;
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 20px 24px 0;
 }
 
-/* dashboard-style pages (search, book registration, stats) benefit from the
-   full panel width rather than the narrow reading column */
-.container-wide {
-  max-width: 100%;
+/* mobile-only counterpart to .topbar, shown inside the top tab bar instead
+   (see the @media (max-width: 720px) block below) */
+.mobile-auth {
+  display: none;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
 }
 
 /* ---------- buttons & forms ---------- */
@@ -489,6 +487,234 @@ a:hover {
   }
 }
 
+/* ---------- calendar: monthly review calendar (stats page) ---------- */
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendar-weekday {
+  text-align: center;
+  font-family: var(--font-utility);
+  font-size: 14px;
+  color: var(--text-muted);
+  padding: 4px 0;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface-raised);
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.calendar-day:hover {
+  border-color: var(--brass-strong);
+}
+
+.calendar-day.empty {
+  visibility: hidden;
+  pointer-events: none;
+  border: none;
+  background: none;
+}
+
+.calendar-day.today span:first-child {
+  font-weight: 700;
+}
+
+.calendar-day.selected {
+  border-color: #c9a227;
+  border-width: 2px;
+}
+
+.calendar-day-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #c9a227;
+}
+
+.calendar-day-panel {
+  margin-top: 16px;
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+/* ---------- stats tabs: library drawer index-card labels ---------- */
+
+.stats-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+}
+
+.stats-tab {
+  font: inherit;
+  font-family: var(--font-utility);
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  padding: 10px 22px 8px;
+  border: 1px solid var(--border);
+  border-bottom: 3px solid transparent;
+  border-radius: 6px 6px 2px 2px;
+  background: #f1e9d8;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.stats-tab:hover {
+  color: var(--text);
+  border-color: var(--brass-strong);
+}
+
+.stats-tab.active {
+  color: var(--text);
+  font-weight: 700;
+  background: color-mix(in srgb, #c9a227 22%, #f1e9d8);
+  border-color: #c9a227;
+}
+
+/* ---------- stamp cards: yearly reading record as 12 loan-card stubs ---------- */
+
+.stamp-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.stamp-card {
+  position: relative;
+  background: #f1e9d8;
+  border: 1px solid var(--border);
+  border-radius: 10px 10px 4px 4px;
+  padding: 14px 16px 14px 26px;
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--text) 6%, transparent);
+}
+
+/* left-edge perforation, like a tear-off library due-date card stub */
+.stamp-card::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 12px;
+  border-left: 1px dashed var(--brass-strong);
+  opacity: 0.55;
+}
+
+.stamp-card-header {
+  margin: 0 0 10px;
+  font-family: var(--font-utility);
+  font-size: 13px;
+  letter-spacing: 0.6px;
+  color: var(--text-muted);
+}
+
+.stamp-card-days {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.stamp-day {
+  position: relative;
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px dashed color-mix(in srgb, var(--text-muted) 65%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-utility);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.stamp-day-blank {
+  opacity: 0.7;
+}
+
+.stamp-day-registered {
+  cursor: default;
+  border-style: solid;
+  border-color: transparent;
+}
+
+.stamp-ink {
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-stamp);
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--surface-raised);
+  background: color-mix(in srgb, #c9a227 88%, transparent);
+  border: 1.5px solid color-mix(in srgb, #c9a227 55%, black);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--text) 22%, transparent);
+}
+
+.stamp-ink.stamp-ink-multi {
+  background: color-mix(in srgb, #6e2a2e 88%, transparent);
+  border-color: color-mix(in srgb, #6e2a2e 55%, black);
+}
+
+.stamp-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  min-width: 160px;
+  max-width: 220px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--text) 24%, transparent);
+  padding: 8px 10px;
+  font-size: 12px;
+  color: var(--text);
+  cursor: default;
+  white-space: normal;
+  text-align: left;
+}
+
+.stamp-tooltip-date {
+  margin: 0 0 4px;
+  font-family: var(--font-utility);
+  font-size: 11px;
+  letter-spacing: 0.4px;
+  color: var(--text-muted);
+}
+
+.stamp-tooltip ul {
+  margin: 0;
+  padding-left: 16px;
+}
+
 /* ---------- accessibility: focus rings ---------- */
 
 a:focus-visible,
@@ -532,15 +758,41 @@ select:focus-visible,
     padding: 10px 0 1px;
   }
 
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
   .sidebar-brand {
     padding: 0 14px 6px;
     font-size: 24px;
   }
 
+  .mobile-auth {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-right: 14px;
+  }
+
+  .mobile-auth .btn {
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+
+  .mobile-auth .muted {
+    color: var(--text-on-bg);
+    opacity: 0.75;
+    font-size: 12px;
+  }
+
   .spines {
     flex-direction: row;
     gap: 3px;
-    padding: 0 6px;
+    padding: 0 3px;
   }
 
   /* every item gets an identical box on the mobile tab-bar */
@@ -563,7 +815,7 @@ select:focus-visible,
     border-bottom-color: var(--burgundy);
   }
 
-  .sidebar-foot {
+  .topbar {
     display: none;
   }
 

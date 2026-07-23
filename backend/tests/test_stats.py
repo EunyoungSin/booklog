@@ -103,3 +103,129 @@ async def test_monthly_stats_defaults_to_current_month(client, auth_headers, boo
 async def test_monthly_stats_requires_both_year_and_month(client, auth_headers):
     res = await client.get("/api/stats/monthly", params={"year": 2025}, headers=auth_headers)
     assert res.status_code == 400
+
+
+def _review_doc(user_id, book_id, created_at, **overrides):
+    doc = {
+        "book_id": book_id,
+        "user_id": user_id,
+        "content": "내용",
+        "rating": 4,
+        "tags": [],
+        "visibility": "public",
+        "ai_summary": None,
+        "ai_feedback": None,
+        "ai_generated_at": None,
+        "created_at": created_at,
+        "updated_at": created_at,
+    }
+    doc.update(overrides)
+    return doc
+
+
+async def test_calendar_month_groups_counts_by_day(client, auth_headers, db, book_id):
+    user_id = await _get_user_id(client, auth_headers)
+    book_oid = ObjectId(book_id)
+
+    await db.reviews.insert_many(
+        [
+            _review_doc(user_id, book_oid, datetime(2026, 7, 1, 9, tzinfo=timezone.utc)),
+            _review_doc(user_id, book_oid, datetime(2026, 7, 1, 20, tzinfo=timezone.utc)),
+            _review_doc(user_id, book_oid, datetime(2026, 7, 3, tzinfo=timezone.utc)),
+            # different month, should not count
+            _review_doc(user_id, book_oid, datetime(2026, 8, 1, tzinfo=timezone.utc)),
+        ]
+    )
+
+    res = await client.get(
+        "/api/stats/calendar", params={"year": 2026, "month": 7}, headers=auth_headers
+    )
+    assert res.status_code == 200
+    assert res.json() == {"2026-07-01": 2, "2026-07-03": 1}
+
+
+async def test_calendar_month_excludes_other_users_reviews(
+    client, auth_headers, other_auth_headers, db, book_id
+):
+    other_user_id = await _get_user_id(client, other_auth_headers)
+    book_oid = ObjectId(book_id)
+
+    await db.reviews.insert_one(
+        _review_doc(other_user_id, book_oid, datetime(2026, 7, 1, tzinfo=timezone.utc))
+    )
+
+    res = await client.get(
+        "/api/stats/calendar", params={"year": 2026, "month": 7}, headers=auth_headers
+    )
+    assert res.json() == {}
+
+
+async def test_calendar_year_covers_whole_year(client, auth_headers, db, book_id):
+    user_id = await _get_user_id(client, auth_headers)
+    book_oid = ObjectId(book_id)
+
+    await db.reviews.insert_many(
+        [
+            _review_doc(user_id, book_oid, datetime(2026, 1, 5, tzinfo=timezone.utc)),
+            _review_doc(user_id, book_oid, datetime(2026, 12, 31, tzinfo=timezone.utc)),
+            _review_doc(user_id, book_oid, datetime(2025, 12, 31, tzinfo=timezone.utc)),
+        ]
+    )
+
+    res = await client.get("/api/stats/calendar/year", params={"year": 2026}, headers=auth_headers)
+    assert res.status_code == 200
+    assert res.json() == {"2026-01-05": 1, "2026-12-31": 1}
+
+
+async def test_calendar_day_returns_reviews_with_book_and_preview(client, auth_headers, db, book_id):
+    user_id = await _get_user_id(client, auth_headers)
+    book_oid = ObjectId(book_id)
+
+    await db.reviews.insert_one(
+        _review_doc(
+            user_id,
+            book_oid,
+            datetime(2026, 7, 1, 9, tzinfo=timezone.utc),
+            content="가" * 100,
+            rating=5,
+        )
+    )
+
+    res = await client.get(
+        "/api/stats/calendar/day", params={"date": "2026-07-01"}, headers=auth_headers
+    )
+    assert res.status_code == 200
+    body = res.json()
+    assert len(body) == 1
+    assert body[0]["book"]["id"] == book_id
+    assert body[0]["book"]["title"] == "채식주의자"
+    assert body[0]["rating"] == 5
+    assert body[0]["summary_preview"] == "가" * 80 + "..."
+
+
+async def test_calendar_day_prefers_ai_summary_for_preview(client, auth_headers, db, book_id):
+    user_id = await _get_user_id(client, auth_headers)
+    book_oid = ObjectId(book_id)
+
+    await db.reviews.insert_one(
+        _review_doc(
+            user_id,
+            book_oid,
+            datetime(2026, 7, 1, tzinfo=timezone.utc),
+            ai_summary="AI 요약본",
+        )
+    )
+
+    res = await client.get(
+        "/api/stats/calendar/day", params={"date": "2026-07-01"}, headers=auth_headers
+    )
+    body = res.json()
+    assert body[0]["summary_preview"] == "AI 요약본"
+
+
+async def test_calendar_day_empty_when_no_reviews(client, auth_headers):
+    res = await client.get(
+        "/api/stats/calendar/day", params={"date": "2026-07-01"}, headers=auth_headers
+    )
+    assert res.status_code == 200
+    assert res.json() == []
