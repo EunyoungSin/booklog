@@ -37,7 +37,18 @@ def create_refresh_token(user_id: str) -> tuple[str, datetime]:
     return raw_token, expire
 
 
-def hash_refresh_token(raw_token: str) -> str:
+def create_verification_code() -> tuple[str, datetime]:
+    """Returns a 6-digit email-verification code (as a string) and its expiry."""
+    settings = get_settings()
+    expire = datetime.now(timezone.utc) + timedelta(
+        minutes=settings.email_verification_code_expire_minutes
+    )
+    code = f"{secrets.randbelow(1_000_000):06d}"
+    return code, expire
+
+
+def hash_token(raw_token: str) -> str:
+    """Generic one-way hash for opaque bearer tokens (refresh + email-verification)."""
     return hashlib.sha256(raw_token.encode("utf-8")).hexdigest()
 
 

@@ -20,6 +20,22 @@ def _no_real_gemini_calls(monkeypatch):
     monkeypatch.setattr("app.routers.reviews.generate_review_ai_output", _unavailable)
 
 
+@pytest_asyncio.fixture(autouse=True)
+def sent_verification_codes(monkeypatch):
+    """Tests must never hit a real SMTP server, regardless of what's configured in the
+    developer's .env. Captures (to_email, code) pairs instead so tests (and the
+    _register_and_get_headers helper below) can drive the registration flow without a
+    real inbox.
+    """
+    sent: list[tuple[str, str]] = []
+
+    async def _fake_send(to_email: str, code: str) -> None:
+        sent.append((to_email, code))
+
+    monkeypatch.setattr("app.routers.auth.send_verification_code_email", _fake_send)
+    return sent
+
+
 @pytest_asyncio.fixture
 async def db():
     mock_client = AsyncMongoMockClient()
@@ -36,7 +52,13 @@ async def client(db):
     app.dependency_overrides.clear()
 
 
-async def _register_and_get_headers(client, email: str, name: str) -> dict:
+async def _register_and_get_headers(
+    client, sent_verification_codes: list[tuple[str, str]], email: str, name: str
+) -> dict:
+    await client.post("/api/auth/send-verification-code", json={"email": email})
+    code = sent_verification_codes[-1][1]
+    await client.post("/api/auth/confirm-verification-code", json={"email": email, "code": code})
+
     res = await client.post(
         "/api/auth/register",
         json={"email": email, "password": "password123", "name": name},
@@ -46,13 +68,15 @@ async def _register_and_get_headers(client, email: str, name: str) -> dict:
 
 
 @pytest_asyncio.fixture
-async def auth_headers(client):
-    return await _register_and_get_headers(client, "reader@example.com", "독자")
+async def auth_headers(client, sent_verification_codes):
+    return await _register_and_get_headers(client, sent_verification_codes, "reader@example.com", "독자")
 
 
 @pytest_asyncio.fixture
-async def other_auth_headers(client):
-    return await _register_and_get_headers(client, "other@example.com", "다른독자")
+async def other_auth_headers(client, sent_verification_codes):
+    return await _register_and_get_headers(
+        client, sent_verification_codes, "other@example.com", "다른독자"
+    )
 
 
 @pytest_asyncio.fixture

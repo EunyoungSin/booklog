@@ -40,6 +40,9 @@ async def _create_indexes(db: AsyncIOMotorDatabase) -> None:
     await db.refresh_tokens.create_index("user_id")
     await db.refresh_tokens.create_index("expires_at", expireAfterSeconds=0)
 
+    await db.email_verification_codes.create_index("email", unique=True)
+    await db.email_verification_codes.create_index("expires_at", expireAfterSeconds=0)
+
     await db.books.create_index("isbn", unique=True, sparse=True)
     await db.books.create_index("title")
 

@@ -1,6 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
-import { ProtectedRoute } from "./components/ProtectedRoute";
 import { BookDetailPage } from "./pages/BookDetailPage";
 import { BookSearchPage } from "./pages/BookSearchPage";
 import { FeedPage } from "./pages/FeedPage";
@@ -20,22 +19,8 @@ function App() {
         <Route path="/books/search" element={<BookSearchPage />} />
         <Route path="/books/:bookId" element={<BookDetailPage />} />
         <Route path="/feed" element={<FeedPage />} />
-        <Route
-          path="/library"
-          element={
-            <ProtectedRoute>
-              <MyLibraryPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/stats"
-          element={
-            <ProtectedRoute>
-              <StatsPage />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/library" element={<MyLibraryPage />} />
+        <Route path="/stats" element={<StatsPage />} />
         <Route path="/search" element={<SearchPage />} />
       </Routes>
     </Layout>

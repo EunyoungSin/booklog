@@ -48,16 +48,12 @@ export function Layout({ children }: { children: ReactNode }) {
           <Link to="/books/search" className="spine">
             도서 등록
           </Link>
-          {user && (
-            <>
-              <Link to="/library" className="spine spine-burgundy">
-                내 서재
-              </Link>
-              <Link to="/stats" className="spine">
-                통계
-              </Link>
-            </>
-          )}
+          <Link to="/library" className="spine spine-burgundy">
+            내 서재
+          </Link>
+          <Link to="/stats" className="spine">
+            통계
+          </Link>
         </div>
       </nav>
       <main className="app-main grain">

@@ -22,6 +22,7 @@ class UserPublic(BaseModel):
     id: PyObjectId = Field(validation_alias="_id")
     email: EmailStr
     name: str
+    email_verified: bool = True
     created_at: datetime
 
 
@@ -38,3 +39,16 @@ class RefreshRequest(BaseModel):
 class AccessTokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+
+class EmailAvailabilityResponse(BaseModel):
+    available: bool
+
+
+class SendVerificationCodeRequest(BaseModel):
+    email: EmailStr
+
+
+class ConfirmVerificationCodeRequest(BaseModel):
+    email: EmailStr
+    code: str = Field(min_length=6, max_length=6)
