@@ -25,6 +25,11 @@ async def _try_atlas_search(
     """Attempt an Atlas Search ($search) query; return None if unavailable so the
     caller can fall back to a regex scan. This covers local MongoDB, mongomock in
     tests, and a fresh Atlas M0 cluster that hasn't had a Search index created yet.
+
+    Callers treat an empty result the same as None and fall back to regex too —
+    an index that exists but returns no hits (indexing lag, analyzer mismatch)
+    would otherwise look identical to a genuine zero-match query, and the regex
+    fallback is always available as ground truth (it's what count_* uses).
     """
     pipeline: list[dict] = [{"$search": {"index": "default", "text": {"query": q, "path": path}}}]
     if extra_match:
@@ -38,7 +43,7 @@ async def _try_atlas_search(
 
 async def search_books(db: AsyncIOMotorDatabase, q: str, skip: int, limit: int) -> list[dict]:
     docs = await _try_atlas_search(db, "books", ["title", "author"], q, None, skip, limit)
-    if docs is not None:
+    if docs:
         return docs
     cursor = (
         db.books.find({"$or": [{"title": _regex(q)}, {"author": _regex(q)}]})
@@ -66,7 +71,7 @@ async def search_reviews(
     docs = await _try_atlas_search(
         db, "reviews", ["content", "tags"], q, visibility_filter, skip, limit
     )
-    if docs is not None:
+    if docs:
         return docs
     cursor = (
         db.reviews.find(
@@ -95,7 +100,7 @@ async def search_quotes(
         return []
     owner_filter = {"user_id": user_id}
     docs = await _try_atlas_search(db, "quotes", ["text", "tags"], q, owner_filter, skip, limit)
-    if docs is not None:
+    if docs:
         return docs
     cursor = (
         db.quotes.find({"$and": [{"$or": [{"text": _regex(q)}, {"tags": _regex(q)}]}, owner_filter]})

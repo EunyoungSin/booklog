@@ -144,6 +144,19 @@ async def update_review(
 
     if update_fields:
         update_fields["updated_at"] = datetime.now(timezone.utc)
+
+        if "content" in update_fields or "rating" in update_fields:
+            new_content = update_fields.get("content", review["content"])
+            new_rating = update_fields.get("rating", review["rating"])
+            try:
+                ai_output = await generate_review_ai_output(new_content, new_rating)
+            except GeminiAPIError as exc:
+                logger.warning("Gemini re-summary failed on review update: %s", exc)
+            else:
+                update_fields["ai_summary"] = ai_output.summary
+                update_fields["ai_feedback"] = ai_output.feedback
+                update_fields["ai_generated_at"] = datetime.now(timezone.utc)
+
         await db.reviews.update_one({"_id": review["_id"]}, {"$set": update_fields})
         review.update(update_fields)
 

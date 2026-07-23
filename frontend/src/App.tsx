@@ -5,6 +5,7 @@ import { BookSearchPage } from "./pages/BookSearchPage";
 import { FeedPage } from "./pages/FeedPage";
 import { LoginPage } from "./pages/LoginPage";
 import { MyLibraryPage } from "./pages/MyLibraryPage";
+import { NotFoundPage } from "./pages/NotFoundPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { SearchPage } from "./pages/SearchPage";
 import { StatsPage } from "./pages/StatsPage";
@@ -22,6 +23,7 @@ function App() {
         <Route path="/library" element={<MyLibraryPage />} />
         <Route path="/stats" element={<StatsPage />} />
         <Route path="/search" element={<SearchPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Layout>
   );
