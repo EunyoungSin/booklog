@@ -22,14 +22,16 @@ async def _try_atlas_search(
     skip: int,
     limit: int,
 ) -> list[dict] | None:
-    """Attempt an Atlas Search ($search) query; return None if unavailable so the
-    caller can fall back to a regex scan. This covers local MongoDB, mongomock in
-    tests, and a fresh Atlas M0 cluster that hasn't had a Search index created yet.
+    """Atlas Search($search) 쿼리를 시도한다. 사용할 수 없으면 None을 반환해
+    호출자가 정규식 스캔으로 대체할 수 있게 한다. 이는 로컬 MongoDB, 테스트의
+    mongomock, 그리고 아직 Search 인덱스가 생성되지 않은 신규 Atlas M0
+    클러스터를 모두 포괄한다.
 
-    Callers treat an empty result the same as None and fall back to regex too —
-    an index that exists but returns no hits (indexing lag, analyzer mismatch)
-    would otherwise look identical to a genuine zero-match query, and the regex
-    fallback is always available as ground truth (it's what count_* uses).
+    호출자는 빈 결과도 None과 동일하게 취급해 정규식으로 대체한다 —
+    인덱스는 존재하지만 결과가 없는 경우(인덱싱 지연, analyzer 불일치)를
+    구분하지 않으면 진짜로 매칭이 없는 쿼리와 똑같아 보이기 때문이며,
+    정규식 대체 경로는 항상 신뢰할 수 있는 기준값으로 사용 가능하다
+    (count_*가 사용하는 것도 이것이다).
     """
     pipeline: list[dict] = [{"$search": {"index": "default", "text": {"query": q, "path": path}}}]
     if extra_match:

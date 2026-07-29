@@ -35,7 +35,7 @@ async def test_register_with_expired_code_verification_is_rejected(client, db, s
     code = sent_verification_codes[-1][1]
     await client.post("/api/auth/confirm-verification-code", json={"email": email, "code": code})
 
-    # simulate the completion window having elapsed since confirmation
+    # 인증 확인 이후 완료 제한 시간이 지난 상황을 시뮬레이션한다
     await db.email_verification_codes.update_one(
         {"email": email},
         {"$set": {"expires_at": datetime.now(timezone.utc) - timedelta(minutes=1)}},
@@ -94,11 +94,11 @@ async def test_refresh_rotates_and_invalidates_old_token(client, sent_verificati
     new_refresh = res.json()["refresh_token"]
     assert new_refresh != old_refresh
 
-    # reusing the old (rotated-out) refresh token must fail
+    # 이전에 로테이션되어 폐기된 리프레시 토큰을 재사용하면 실패해야 한다
     res2 = await client.post("/api/auth/refresh", json={"refresh_token": old_refresh})
     assert res2.status_code == 401
 
-    # the new refresh token should still work
+    # 새 리프레시 토큰은 여전히 정상 동작해야 한다
     res3 = await client.post("/api/auth/refresh", json={"refresh_token": new_refresh})
     assert res3.status_code == 200
 
@@ -156,7 +156,7 @@ async def test_confirm_verification_code_rejects_wrong_code(client, sent_verific
     )
     assert res.status_code == 400
 
-    # the correct code still works afterwards (attempt wasn't locked out yet)
+    # 올바른 코드는 그 이후에도 여전히 동작한다 (아직 시도 횟수가 잠기지 않음)
     res2 = await client.post(
         "/api/auth/confirm-verification-code", json={"email": email, "code": real_code}
     )
@@ -175,7 +175,7 @@ async def test_confirm_verification_code_locks_out_after_max_attempts(client, se
         )
         assert res.status_code == 400
 
-    # even the correct code is now rejected until a new one is requested
+    # 이제는 새 코드를 요청하기 전까지 올바른 코드조차 거부된다
     res = await client.post(
         "/api/auth/confirm-verification-code", json={"email": email, "code": real_code}
     )

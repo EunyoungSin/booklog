@@ -9,9 +9,10 @@ from app.services.gemini import GeminiAPIError
 
 @pytest_asyncio.fixture(autouse=True)
 def _no_real_gemini_calls(monkeypatch):
-    """Tests must never hit the real Gemini API, regardless of what GEMINI_API_KEY is
-    set in the developer's .env. Individual tests (e.g. tests/test_ai.py) override this
-    per-test with their own monkeypatch to exercise specific success/failure scenarios.
+    """개발자의 .env에 설정된 GEMINI_API_KEY와 무관하게, 테스트는 절대 실제
+    Gemini API를 호출해서는 안 된다. 개별 테스트(예: tests/test_ai.py)는
+    특정 성공/실패 시나리오를 검증하기 위해 각자의 monkeypatch로 이 설정을
+    테스트별로 오버라이드한다.
     """
 
     async def _unavailable(content: str, rating: int):
@@ -22,10 +23,10 @@ def _no_real_gemini_calls(monkeypatch):
 
 @pytest_asyncio.fixture(autouse=True)
 def sent_verification_codes(monkeypatch):
-    """Tests must never hit a real SMTP server, regardless of what's configured in the
-    developer's .env. Captures (to_email, code) pairs instead so tests (and the
-    _register_and_get_headers helper below) can drive the registration flow without a
-    real inbox.
+    """개발자의 .env에 무엇이 설정되어 있든, 테스트는 절대 실제 SMTP 서버를
+    호출해서는 안 된다. 대신 (to_email, code) 쌍을 저장해두어 테스트(및 아래의
+    _register_and_get_headers 헬퍼)가 실제 받은편지함 없이 회원가입 플로우를
+    진행할 수 있게 한다.
     """
     sent: list[tuple[str, str]] = []
 

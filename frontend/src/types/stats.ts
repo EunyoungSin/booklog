@@ -6,7 +6,7 @@ export interface MonthlyStats {
   average_rating: number | null;
 }
 
-/** date string (YYYY-MM-DD) -> review count on that day */
+/** 날짜 문자열(YYYY-MM-DD) -> 해당 날짜의 리뷰 개수 */
 export type CalendarCounts = Record<string, number>;
 
 export interface CalendarDayReview {

@@ -40,7 +40,7 @@ def validate_object_id(value: Any) -> ObjectId:
 
 
 class MongoBaseModel(BaseModel):
-    """Base for response models that read documents straight from MongoDB."""
+    """MongoDB 문서를 그대로 읽어오는 응답 모델의 기반 클래스."""
 
     model_config = ConfigDict(populate_by_name=True, arbitrary_types_allowed=True)
 

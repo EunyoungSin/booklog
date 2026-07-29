@@ -6,7 +6,7 @@ import type { CalendarCounts, CalendarDayReview } from "../types/stats";
 
 const MONTHS = Array.from({ length: 12 }, (_, i) => i + 1);
 
-/** stable "hand-stamped" tilt per date, not a fresh random angle on every render */
+/** 렌더링마다 새로 무작위 각도를 정하지 않고, 날짜별로 고정된 "손도장" 기울기를 사용한다 */
 function stampRotation(key: string): number {
   let hash = 0;
   for (let i = 0; i < key.length; i++) {

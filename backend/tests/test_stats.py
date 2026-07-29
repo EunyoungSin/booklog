@@ -12,7 +12,7 @@ async def test_monthly_stats_for_specific_past_month(client, auth_headers, db, b
     user_id = await _get_user_id(client, auth_headers)
     book_oid = ObjectId(book_id)
 
-    # seed a March 2025 book addition and two reviews directly (bypassing "now")
+    # 2025년 3월 책 추가와 리뷰 두 개를 ("now"를 우회하여) 직접 시딩한다
     march = datetime(2025, 3, 15, tzinfo=timezone.utc)
     await db.user_books.insert_one(
         {"user_id": user_id, "book_id": ObjectId(), "added_at": march}
@@ -47,7 +47,7 @@ async def test_monthly_stats_for_specific_past_month(client, auth_headers, db, b
             },
         ]
     )
-    # a review in a different month should not count
+    # 다른 달의 리뷰는 집계되지 않아야 한다
     april = datetime(2025, 4, 1, tzinfo=timezone.utc)
     await db.reviews.insert_one(
         {
@@ -97,7 +97,7 @@ async def test_monthly_stats_defaults_to_current_month(client, auth_headers, boo
     res = await client.get("/api/stats/monthly", headers=auth_headers)
     body = res.json()
     assert body["reviews_written_count"] >= 1
-    assert body["books_added_count"] >= 1  # book_id fixture registers a book "now"
+    assert body["books_added_count"] >= 1  # book_id fixture가 "지금" 책을 등록한다
 
 
 async def test_monthly_stats_requires_both_year_and_month(client, auth_headers):
@@ -132,7 +132,7 @@ async def test_calendar_month_groups_counts_by_day(client, auth_headers, db, boo
             _review_doc(user_id, book_oid, datetime(2026, 7, 1, 9, tzinfo=timezone.utc)),
             _review_doc(user_id, book_oid, datetime(2026, 7, 1, 20, tzinfo=timezone.utc)),
             _review_doc(user_id, book_oid, datetime(2026, 7, 3, tzinfo=timezone.utc)),
-            # different month, should not count
+            # 다른 달이므로 집계되지 않아야 한다
             _review_doc(user_id, book_oid, datetime(2026, 8, 1, tzinfo=timezone.utc)),
         ]
     )

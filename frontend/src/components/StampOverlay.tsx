@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-/** Fires a one-shot "rubber stamp" animation each time `trigger()` is called. */
+/** `trigger()`가 호출될 때마다 한 번씩 "도장 찍기" 애니메이션을 실행한다. */
 export function useStamp() {
   const [triggerKey, setTriggerKey] = useState(0);
   function trigger() {

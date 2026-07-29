@@ -1,25 +1,25 @@
 :root {
-  /* requested 6-color palette: a warm neutral tan scale anchored by one deep navy */
-  --bg: #071a35; /* deep navy — sidebar / structural dark / ink / second accent */
-  --surface: #e3ded5; /* main panel */
-  --surface-raised: #f6f5f2; /* lightest tone, for cards atop the panel */
-  --text: color-mix(in srgb, var(--bg) 50%, #1f1d08 50%); /* navy blended with a dark olive ink */
-  --text-muted: #a99a7c; /* darkest tan — muted secondary text */
-  --text-on-bg: #f6f5f2; /* lightest tan, for text on the navy sidebar */
-  --brass: #d0c7b7; /* mid-light tan — borders, structural accents */
-  --brass-strong: #bcb099; /* deeper tan — brighter point accent */
+  /* 요청받은 6색 팔레트: 짙은 네이비 하나를 축으로 한 따뜻한 뉴트럴 탄색 스케일 */
+  --bg: #071a35; /* 짙은 네이비 — 사이드바 / 구조적 다크 / 잉크 / 두 번째 강조색 */
+  --surface: #e3ded5; /* 메인 패널 */
+  --surface-raised: #f6f5f2; /* 가장 밝은 톤, 패널 위 카드용 */
+  --text: color-mix(in srgb, var(--bg) 50%, #1f1d08 50%); /* 네이비와 짙은 올리브 잉크를 혼합 */
+  --text-muted: #a99a7c; /* 가장 어두운 탄색 — 흐린 보조 텍스트 */
+  --text-on-bg: #f6f5f2; /* 가장 밝은 탄색, 네이비 사이드바 위 텍스트용 */
+  --brass: #d0c7b7; /* 중간 밝기 탄색 — 테두리, 구조적 강조 */
+  --brass-strong: #bcb099; /* 더 짙은 탄색 — 더 밝은 포인트 강조 */
   --border: color-mix(in srgb, var(--brass-strong) 20%, transparent);
-  /* no red in this palette; reusing --bg here would vanish against the navy
-     sidebar, so the second accent borrows the darkest tan instead */
+  /* 이 팔레트에는 빨간색이 없다; 여기서 --bg를 재사용하면 네이비
+     사이드바 위에서 사라지므로, 두 번째 강조색은 대신 가장 어두운 탄색을 사용한다 */
   --burgundy: #a99a7c;
-  /* error text sits on the light tan surface, where the tan accent above
-     would be too low-contrast — the navy reads clearly there instead */
+  /* 오류 텍스트는 밝은 탄색 표면 위에 놓이는데, 위의 탄색 강조는
+     대비가 너무 낮아서 네이비를 쓰면 더 또렷하게 읽힌다 */
   --danger: var(--bg);
 
   --font-display: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
   --font-body: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
   --font-utility: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
-  /* loan-card stamp digits only — the rest of the UI stays on the Korean sans stack */
+  /* 대출카드 도장 숫자 전용 — 나머지 UI는 한글 산세리프 스택을 유지한다 */
   --font-stamp: "IBM Plex Serif", "Spectral", serif;
 
   color-scheme: light;
@@ -34,8 +34,8 @@
 
 body {
   margin: 0;
-  /* the sidebar paints its own navy background explicitly; the page canvas
-     itself should read as ivory so any layout gap never shows navy behind content */
+  /* 사이드바는 자체적으로 네이비 배경을 명시적으로 칠한다; 페이지 캔버스
+     자체는 아이보리로 보여야 레이아웃 틈새가 생겨도 콘텐츠 뒤로 네이비가 비치지 않는다 */
   background: var(--surface);
   overflow-x: hidden;
 }
@@ -58,12 +58,12 @@ a:hover {
   text-decoration: underline;
 }
 
-/* faint paper grain — pure CSS, no image asset */
+/* 은은한 종이 질감 — 이미지 에셋 없이 순수 CSS로 구현 */
 .grain {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
 }
 
-/* ---------- app shell: sidebar (spines) + ivory main panel ---------- */
+/* ---------- 앱 셸: 사이드바(책등) + 아이보리 메인 패널 ---------- */
 
 .app-shell {
   display: flex;
@@ -121,7 +121,7 @@ a:hover {
   transform: translateX(4px);
 }
 
-/* the generic focus ring is navy, which vanishes on the navy sidebar itself */
+/* 기본 포커스 링은 네이비라서 네이비 사이드바 위에서는 보이지 않는다 */
 .spine:focus-visible {
   outline-color: var(--text-on-bg);
 }
@@ -154,8 +154,8 @@ a:hover {
   padding: 20px 24px 0;
 }
 
-/* mobile-only counterpart to .topbar, shown inside the top tab bar instead
-   (see the @media (max-width: 720px) block below) */
+/* .topbar의 모바일 전용 대응 요소로, 대신 상단 탭 바 안에 표시된다
+   (아래 @media (max-width: 720px) 블록 참고) */
 .mobile-auth {
   display: none;
 }
@@ -166,7 +166,7 @@ a:hover {
   padding: 32px 24px 80px;
 }
 
-/* ---------- buttons & forms ---------- */
+/* ---------- 버튼 & 폼 ---------- */
 
 .btn {
   display: inline-flex;
@@ -232,7 +232,7 @@ a:hover {
   color: var(--text);
 }
 
-/* ---------- cards ---------- */
+/* ---------- 카드 ---------- */
 
 .card {
   border: 1px solid var(--border);
@@ -314,7 +314,7 @@ a:hover {
   letter-spacing: 0.4px;
 }
 
-/* ---------- index-card: search / filter chrome, library loan-card motif ---------- */
+/* ---------- index-card: 검색/필터 UI, 도서관 대출카드 모티프 ---------- */
 
 .index-card {
   position: relative;
@@ -344,15 +344,15 @@ a:hover {
   margin: 0 0 10px;
 }
 
-/* ---------- shelf: horizontal-scrolling library shelf of book covers ---------- */
+/* ---------- shelf: 책 표지를 가로 스크롤로 보여주는 도서관 서가 ---------- */
 
 .shelf {
   display: flex;
   gap: 18px;
   overflow-x: auto;
   overflow-y: hidden;
-  /* generous buffer on every side so the hover tilt (rotate + translateY)
-     never pushes the scrollable content area and pops a scrollbar into view */
+  /* 호버 시 기울임(rotate + translateY) 효과가 스크롤 영역을 밀어내어
+     스크롤바가 나타나는 일이 없도록 사방에 넉넉한 여백을 둔다 */
   padding: 20px 24px 24px;
   scroll-snap-type: x proximity;
 }
@@ -394,9 +394,9 @@ a:hover {
   margin-top: 8px;
   font-size: 13px;
   line-height: 1.3;
-  /* fixed height (not just line-clamp) so every title block is exactly the
-     same size and everything below it (date, remove button) lines up,
-     whether the title takes 1 line or 2 */
+  /* line-clamp만으로는 부족해 높이를 고정한다. 이렇게 해야 제목이 1줄이든
+     2줄이든 모든 제목 블록의 크기가 동일하게 유지되어 그 아래(날짜, 삭제
+     버튼)가 항상 일렬로 정렬된다 */
   height: 34px;
   min-height: 34px;
   max-height: 34px;
@@ -412,7 +412,7 @@ a:hover {
   color: var(--text);
 }
 
-/* ---------- stamp: one-shot save micro-interaction ---------- */
+/* ---------- stamp: 저장 시 한 번 실행되는 마이크로 인터랙션 ---------- */
 
 .stamp {
   position: fixed;
@@ -487,7 +487,7 @@ a:hover {
   }
 }
 
-/* ---------- calendar: monthly review calendar (stats page) ---------- */
+/* ---------- calendar: 월별 리뷰 캘린더 (통계 페이지) ---------- */
 
 .calendar-header {
   display: flex;
@@ -559,7 +559,7 @@ a:hover {
   padding-top: 12px;
 }
 
-/* ---------- stats tabs: library drawer index-card labels ---------- */
+/* ---------- stats tabs: 도서관 서랍 색인 카드 라벨 ---------- */
 
 .stats-tabs {
   display: flex;
@@ -593,7 +593,7 @@ a:hover {
   border-color: #c9a227;
 }
 
-/* ---------- stamp cards: yearly reading record as 12 loan-card stubs ---------- */
+/* ---------- stamp cards: 연간 독서 기록을 12개의 대출카드 조각으로 표현 ---------- */
 
 .stamp-cards {
   display: flex;
@@ -611,7 +611,7 @@ a:hover {
   box-shadow: 0 1px 2px color-mix(in srgb, var(--text) 6%, transparent);
 }
 
-/* left-edge perforation, like a tear-off library due-date card stub */
+/* 도서관 반납일 카드 조각을 뜯어낸 것처럼 왼쪽 가장자리에 절취선 표현 */
 .stamp-card::before {
   content: "";
   position: absolute;
@@ -715,7 +715,7 @@ a:hover {
   padding-left: 16px;
 }
 
-/* ---------- accessibility: focus rings ---------- */
+/* ---------- 접근성: 포커스 링 ---------- */
 
 a:focus-visible,
 button:focus-visible,
@@ -734,15 +734,15 @@ select:focus-visible,
   outline-offset: -1px;
 }
 
-/* ---------- responsive: sidebar becomes a top spine-row on narrow screens ---------- */
+/* ---------- 반응형: 좁은 화면에서는 사이드바가 상단 책등 행이 된다 ---------- */
 
 @media (max-width: 720px) {
   .app-shell {
     flex-direction: column;
-    /* in row layout, flex-start keeps the sidebar from stretching to the
-       (taller) main panel's height; but once we switch to a column layout
-       the cross-axis becomes width, and flex-start would shrink both
-       children to their content width instead of the full viewport width */
+    /* row 레이아웃에서는 flex-start가 사이드바가 (더 높은) 메인 패널의
+       높이만큼 늘어나지 않게 막아준다. 하지만 column 레이아웃으로
+       전환되면 교차축이 너비가 되어, flex-start를 쓰면 두 자식 요소가
+       전체 뷰포트 너비 대신 콘텐츠 너비만큼 줄어들게 된다 */
     align-items: stretch;
   }
 
@@ -795,7 +795,7 @@ select:focus-visible,
     padding: 0 3px;
   }
 
-  /* every item gets an identical box on the mobile tab-bar */
+  /* 모바일 탭 바에서는 모든 항목이 동일한 크기의 박스를 갖는다 */
   .spine {
     flex: 1 1 0;
     min-width: 0;

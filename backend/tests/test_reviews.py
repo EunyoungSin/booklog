@@ -15,7 +15,7 @@ async def test_create_review(client, auth_headers, book_id):
     assert res.status_code == 201
     body = res.json()
     assert body["rating"] == 5
-    assert body["tags"] == ["소설", "한강"]  # trimmed, order preserved, no dupes
+    assert body["tags"] == ["소설", "한강"]  # 공백 제거, 순서 유지, 중복 없음
     assert body["visibility"] == "public"
     assert body["ai_summary"] is None
 
@@ -52,11 +52,11 @@ async def test_private_review_hidden_from_others(client, auth_headers, other_aut
     created = await _create_review(client, auth_headers, book_id, visibility="private")
     review_id = created.json()["id"]
 
-    # owner can see it
+    # 작성자 본인은 볼 수 있다
     res_owner = await client.get(f"/api/reviews/{review_id}", headers=auth_headers)
     assert res_owner.status_code == 200
 
-    # another user cannot
+    # 다른 사용자는 볼 수 없다
     res_other = await client.get(f"/api/reviews/{review_id}", headers=other_auth_headers)
     assert res_other.status_code == 404
 

@@ -5,7 +5,7 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 async def attach_author_and_likes(
     db: AsyncIOMotorDatabase, reviews: list[dict], current_user_id: ObjectId | None
 ) -> list[dict]:
-    """Enrich raw review documents with author_name, like_count and liked_by_me."""
+    """원본 리뷰 문서에 author_name, like_count, liked_by_me 정보를 채워 넣는다."""
     if not reviews:
         return []
 

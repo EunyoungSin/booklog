@@ -30,7 +30,7 @@ def create_access_token(user_id: str) -> str:
 
 
 def create_refresh_token(user_id: str) -> tuple[str, datetime]:
-    """Returns the raw refresh token (a random string, not a JWT) and its expiry."""
+    """리프레시 토큰 원본 문자열(JWT가 아닌 랜덤 문자열)과 만료 시각을 반환한다."""
     settings = get_settings()
     expire = datetime.now(timezone.utc) + timedelta(days=settings.refresh_token_expire_days)
     raw_token = secrets.token_urlsafe(48)
@@ -38,7 +38,7 @@ def create_refresh_token(user_id: str) -> tuple[str, datetime]:
 
 
 def create_verification_code() -> tuple[str, datetime]:
-    """Returns a 6-digit email-verification code (as a string) and its expiry."""
+    """6자리 이메일 인증코드(문자열)와 만료 시각을 반환한다."""
     settings = get_settings()
     expire = datetime.now(timezone.utc) + timedelta(
         minutes=settings.email_verification_code_expire_minutes
@@ -48,7 +48,7 @@ def create_verification_code() -> tuple[str, datetime]:
 
 
 def hash_token(raw_token: str) -> str:
-    """Generic one-way hash for opaque bearer tokens (refresh + email-verification)."""
+    """불투명한 bearer 토큰(리프레시 + 이메일 인증)을 위한 범용 단방향 해시."""
     return hashlib.sha256(raw_token.encode("utf-8")).hexdigest()
 
 

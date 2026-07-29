@@ -13,7 +13,7 @@ async def test_create_and_list_comments(client, auth_headers, other_auth_headers
     list_res = await client.get(f"/api/books/{book_id}/comments", headers=auth_headers)
     body = list_res.json()
     assert body["total"] == 2
-    # oldest-first thread order
+    # 스레드는 오래된 순으로 정렬된다
     assert body["items"][0]["content"] == "저도 이 책 좋아해요!"
     assert body["items"][1]["author_name"] == "다른독자"
 

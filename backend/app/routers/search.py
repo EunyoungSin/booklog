@@ -98,10 +98,10 @@ async def search(
         items = [_quote_to_item(quote, books_by_id) for quote in docs]
         return Page(items=items, total=total, page=pagination.page, limit=pagination.limit)
 
-    # type == ALL: best-effort merge across the three categories. Each category is
-    # over-fetched up to (page * limit), concatenated (books, then reviews, then
-    # quotes), and sliced in Python — this is not a globally relevance-ranked merge,
-    # but it's a reasonable MVP behavior at MongoDB Atlas M0 scale.
+    # type == ALL: 세 카테고리를 최선을 다해 병합한다. 각 카테고리를
+    # (page * limit)만큼 초과 조회한 뒤, (책 -> 리뷰 -> 문구 순으로) 이어붙이고
+    # Python에서 슬라이싱한다 — 전역적으로 관련도 순위를 매긴 병합은 아니지만,
+    # MongoDB Atlas M0 규모에서는 MVP 수준으로 합리적인 동작이다.
     fetch_cap = min(pagination.page * pagination.limit, 100)
     books_docs = await search_books(db, q, 0, fetch_cap)
     reviews_docs = await search_reviews(db, q, user_id, 0, fetch_cap)

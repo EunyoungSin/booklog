@@ -40,8 +40,8 @@ def create_app() -> FastAPI:
 
     @app.exception_handler(RequestValidationError)
     async def validation_exception_handler(request: Request, exc: RequestValidationError):
-        # exc.errors() can include raw exception instances (e.g. `ctx.error` for a
-        # validator's ValueError), which plain JSONResponse can't serialize on its own.
+        # exc.errors()에는 원본 예외 인스턴스가 포함될 수 있어(예: validator의
+        # ValueError에 대한 `ctx.error`), 일반 JSONResponse만으로는 직렬화할 수 없다.
         return JSONResponse(status_code=422, content={"detail": jsonable_encoder(exc.errors())})
 
     @app.get("/api/health", tags=["health"])

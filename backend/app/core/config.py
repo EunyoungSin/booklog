@@ -19,20 +19,20 @@ class Settings(BaseSettings):
     # CORS
     cors_origins: str = "http://localhost:5173"
 
-    # Email (SMTP) - if smtp_host is blank, verification codes are logged instead of sent
+    # 이메일 (SMTP) - smtp_host가 비어있으면 인증코드를 발송하지 않고 로그로 남긴다
     smtp_host: str = ""
     smtp_port: int = 587
     smtp_username: str = ""
     smtp_password: str = ""
     smtp_from_email: str = "noreply@booklog.local"
 
-    # email verification code (sent during registration, before the account exists)
+    # 이메일 인증코드 (계정이 생성되기 전, 회원가입 중에 발송됨)
     email_verification_code_expire_minutes: int = 10
-    # once a code is confirmed, how long the caller has to finish POST /api/auth/register
+    # 인증코드 확인 후 POST /api/auth/register를 완료해야 하는 제한 시간
     email_verification_completion_window_minutes: int = 30
     email_verification_max_attempts: int = 5
 
-    # Aladin (알라딘) API
+    # 알라딘 API
     aladin_ttb_key: str = ""
     aladin_api_base_url: str = "https://www.aladin.co.kr/ttb/api"
 

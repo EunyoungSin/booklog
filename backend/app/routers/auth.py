@@ -85,7 +85,7 @@ async def send_verification_code(
 
     try:
         await send_verification_code_email(payload.email, code)
-    except Exception as exc:  # best-effort: the caller can always retry
+    except Exception as exc:  # 최선을 다하는 수준의 처리: 호출자는 언제든 재시도할 수 있다
         logger.warning("Failed to send verification code to %s: %s", payload.email, exc)
 
     return None
@@ -172,7 +172,7 @@ async def refresh(payload: RefreshRequest, db: Annotated[AsyncIOMotorDatabase, D
     ):
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid or expired refresh token")
 
-    # rotate: revoke the used refresh token and issue a new pair
+    # 로테이션: 사용된 리프레시 토큰을 폐기하고 새로운 토큰 쌍을 발급한다
     await db.refresh_tokens.update_one({"_id": token_doc["_id"]}, {"$set": {"revoked": True}})
 
     return await _issue_token_pair(db, token_doc["user_id"])

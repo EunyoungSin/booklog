@@ -21,7 +21,7 @@ async def test_feed_shows_only_public_reviews_latest_first(
     assert res.status_code == 200
     body = res.json()
     assert body["total"] == 2
-    # latest first
+    # 최신순 정렬
     assert body["items"][0]["content"] == "두번째 공개 리뷰"
     assert body["items"][0]["author_name"] == "다른독자"
     assert body["items"][0]["book"]["title"] == "채식주의자"

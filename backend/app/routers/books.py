@@ -46,11 +46,11 @@ async def register_book(
             "added_by": current_user["_id"],
             "created_at": datetime.now(timezone.utc),
         }
-        # Omit "isbn" entirely (rather than setting it to None) when there is no
-        # ISBN. The unique index on "isbn" is sparse, but MongoDB sparse indexes
-        # only skip documents where the field is truly absent — a field that is
-        # merely present with a null value still gets indexed, so every
-        # isbn-less book beyond the first would collide on isbn: null.
+        # ISBN이 없을 때는 None으로 설정하지 않고 "isbn" 필드 자체를 아예 생략한다.
+        # "isbn"에 걸린 유니크 인덱스는 sparse지만, MongoDB의 sparse 인덱스는
+        # 필드가 완전히 없는 문서만 건너뛴다 — 필드가 존재하되 값이 null인
+        # 경우에는 여전히 인덱싱되므로, ISBN 없는 책이 두 권 이상이면
+        # isbn: null 값끼리 충돌하게 된다.
         if payload.isbn:
             new_book["isbn"] = payload.isbn
         result = await db.books.insert_one(new_book)

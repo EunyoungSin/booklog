@@ -49,7 +49,7 @@ async function refreshAccessToken(): Promise<string> {
   return refreshPromise;
 }
 
-/** App startup: restore a session from the refresh token saved in localStorage. */
+/** 앱 시작 시: localStorage에 저장된 리프레시 토큰으로 세션을 복원한다. */
 export async function bootstrapAuthFromStorage(): Promise<User | null> {
   const storedRefreshToken = localStorage.getItem(REFRESH_TOKEN_STORAGE_KEY);
   if (!storedRefreshToken) {

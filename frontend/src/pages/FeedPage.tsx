@@ -20,12 +20,12 @@ export function FeedPage() {
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
-    // On a hard refresh, auth session restoration (refresh token exchange) is
-    // still async when this page mounts. Fetching before it resolves sends the
-    // request with no access token, so the backend treats it as anonymous and
-    // every review comes back with liked_by_me: false — even ones this user
-    // already liked. Wait for auth to settle so the response reflects the
-    // real session.
+    // 강력 새로고침 시, 이 페이지가 마운트되는 시점에는 인증 세션 복원
+    // (리프레시 토큰 교환)이 아직 비동기로 진행 중일 수 있다. 이 작업이
+    // 끝나기 전에 요청을 보내면 액세스 토큰 없이 전송되어 백엔드가 익명
+    // 요청으로 처리하고, 이 사용자가 이미 좋아요를 누른 리뷰조차
+    // liked_by_me: false로 돌아온다. 응답이 실제 세션을 반영하도록
+    // 인증이 정착될 때까지 기다린다.
     if (authLoading) return;
     setIsLoading(true);
     try {

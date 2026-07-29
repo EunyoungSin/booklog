@@ -5,7 +5,7 @@ import { checkEmailAvailable, confirmVerificationCode, sendVerificationCode } fr
 import { extractErrorMessage } from "../api/errors";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-// matches EMAIL_VERIFICATION_CODE_EXPIRE_MINUTES on the backend
+// 백엔드의 EMAIL_VERIFICATION_CODE_EXPIRE_MINUTES와 일치해야 한다
 const CODE_EXPIRY_SECONDS = 10 * 60;
 type EmailStatus = "idle" | "checking" | "available" | "taken";
 type VerificationStatus = "unsent" | "sending" | "sent" | "confirming" | "verified";

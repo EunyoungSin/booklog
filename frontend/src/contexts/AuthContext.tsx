@@ -41,7 +41,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const refreshToken = getStoredRefreshToken();
     if (refreshToken) {
       await logoutRequest(refreshToken).catch(() => {
-        // best-effort: even if the server call fails, clear the local session
+        // 최선을 다하는 수준의 처리: 서버 호출이 실패해도 로컬 세션은 정리한다
       });
     }
     setTokens(null);

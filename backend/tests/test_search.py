@@ -91,11 +91,11 @@ async def test_search_works_without_auth(client, auth_headers, other_auth_header
 
     res_reviews = await client.get("/api/search", params={"q": "감동", "type": "reviews"})
     assert res_reviews.status_code == 200
-    assert res_reviews.json()["total"] == 1  # only the public one
+    assert res_reviews.json()["total"] == 1  # 공개된 것만 해당
 
     res_quotes = await client.get("/api/search", params={"q": "아름다운", "type": "quotes"})
     assert res_quotes.status_code == 200
-    assert res_quotes.json()["total"] == 0  # quotes are never public
+    assert res_quotes.json()["total"] == 0  # 문구는 절대 공개되지 않는다
 
 
 async def test_search_all_merges_categories(client, auth_headers, book_id):
@@ -105,6 +105,6 @@ async def test_search_all_merges_categories(client, auth_headers, book_id):
     res = await client.get("/api/search", params={"q": "한강"}, headers=auth_headers)
     body = res.json()
     types = {item["type"] for item in body["items"]}
-    assert "book" in types  # author "한강" matches book search
+    assert "book" in types  # 저자 "한강"이 책 검색과 매칭됨
     assert "review" in types
     assert "quote" in types
