@@ -8,7 +8,7 @@ https://booklog-theta.vercel.app/ 에서 확인 해 보실 수 있습니다.
 ## 폴더 구조
 
 ```
-book/
+booklog/
 ├── backend/   # Python(FastAPI) + MongoDB
 └── frontend/  # React + TypeScript (Vite)
 ```
@@ -64,3 +64,4 @@ npm run dev
 - 프론트엔드: Vercel (빌드 명령 `npm run build`, 출력 디렉터리 `dist`, 환경변수 `VITE_API_BASE_URL`을 배포된 백엔드 주소로 설정)
 - 백엔드: Render 무료 웹 서비스 (시작 명령 `uv run uvicorn app.main:app --host 0.0.0.0 --port $PORT`, `.env.example`의 환경변수를 Render 대시보드에 등록)
 - DB: MongoDB Atlas M0 (전문 검색 품질을 높이려면 Atlas 콘솔에서 `default`라는 이름의 Search 인덱스를 books/reviews/quotes 컬렉션에 생성 — 없어도 정규식 폴백으로 동작함)
+- 이메일: 초기에는 SMTP로 인증 메일을 발송했으나, Render 무료 웹 서비스에서 아웃바운드 SMTP 포트가 막혀 있어 정상 발송이 되지 않았음 → Resend API(HTTPS 기반) 방식으로 전환
