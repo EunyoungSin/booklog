@@ -23,7 +23,7 @@ def _no_real_gemini_calls(monkeypatch):
 
 @pytest_asyncio.fixture(autouse=True)
 def sent_verification_codes(monkeypatch):
-    """개발자의 .env에 무엇이 설정되어 있든, 테스트는 절대 실제 SMTP 서버를
+    """개발자의 .env에 무엇이 설정되어 있든, 테스트는 절대 실제 Resend API를
     호출해서는 안 된다. 대신 (to_email, code) 쌍을 저장해두어 테스트(및 아래의
     _register_and_get_headers 헬퍼)가 실제 받은편지함 없이 회원가입 플로우를
     진행할 수 있게 한다.

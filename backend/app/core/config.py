@@ -19,12 +19,9 @@ class Settings(BaseSettings):
     # CORS
     cors_origins: str = "http://localhost:5173"
 
-    # 이메일 (SMTP) - smtp_host가 비어있으면 인증코드를 발송하지 않고 로그로 남긴다
-    smtp_host: str = ""
-    smtp_port: int = 587
-    smtp_username: str = ""
-    smtp_password: str = ""
-    smtp_from_email: str = "noreply@booklog.local"
+    # 이메일 (Resend API) - resend_api_key가 비어있으면 인증코드를 발송하지 않고 로그로 남긴다
+    resend_api_key: str = ""
+    resend_from_email: str = "onboarding@resend.dev"
 
     # 이메일 인증코드 (계정이 생성되기 전, 회원가입 중에 발송됨)
     email_verification_code_expire_minutes: int = 10
